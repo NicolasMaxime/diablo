@@ -5,11 +5,24 @@
  *      Author: olejnicz5u
  */
 
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "Model.h"
 
-Model::Model() {
-	// TODO Auto-generated constructor stub
+Model::Model(const char* file) {
+	std::ifstream ifs(file);
+	std::string line;
 
+	if(ifs.is_open()){
+		while(std::getline(ifs, line)){
+			std::cout << line << std::endl;
+		}
+		ifs.close();
+	}
+	else {
+		std::cout << "Unable to open file : " << file << std::endl;
+	}
 }
 
 Model::~Model() {
