@@ -8,6 +8,8 @@
 #ifndef POINT3D_H_
 #define POINT3D_H_
 
+#include <sstream>
+
 class Point3D {
 public:
 	float x;
@@ -20,7 +22,13 @@ public:
 		z = c;
 	}
 
-	virtual ~Point3D();
+	std::string toString(){
+		std::ostringstream ss;
+		ss << x << " " << y << " " << z;
+		return (ss.str());
+	}
+
+	virtual ~Point3D(){};
 };
 
 #endif /* POINT3D_H_ */

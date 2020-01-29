@@ -24,7 +24,7 @@ public:
 	Triangle(std::vector<Point3D> pts){
 		points = pts;
 	}
-	virtual ~Triangle();
+	virtual ~Triangle(){};
 };
 
 #endif /* TRIANGLE_H_ */

@@ -9,13 +9,11 @@
 #define MODEL_H_
 
 #include <vector>
+#include <string>
 #include "Triangle.h"
 
 class Model {
 public:
-	int nbVertices();                           // number of vertices
-	int nbTriangles();                          // number of triangles
-
 	std::vector<Triangle> triangles;			//triangles
 	std::vector<Point3D> vertices;				//vertices
 
