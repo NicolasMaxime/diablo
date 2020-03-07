@@ -19,7 +19,9 @@
 using namespace std;
 
 void putpixel(vector<Couleur> &frame, int x, int y, Couleur c){
-  Couleur &ref = frame.at(y * WIDTH + x);
+  y = (HEIGHT) - y;
+  int tmp = y * WIDTH + x;
+  Couleur &ref = frame.at(tmp);
   ref = c;
 }
 
@@ -42,22 +44,25 @@ void writeImage(vector<Couleur> frame){
   ofs.close();
 }
 
-void render(){
-  vector<Couleur> frame(WIDTH * HEIGHT);
+void render(Model &mod){
+  vector<Couleur> frame(WIDTH * (HEIGHT + 1));
   Couleur white(1, 1, 1);
+  int size = mod.vertices.size();
 
-  for (int i = 0; i != WIDTH; i++){
-    putpixel(frame, i, HEIGHT / 2, white);
+  for (int i = 0; i != size; i++){
+    Point3D &c = mod.vertices[i];
+    float x = (c.x + 1) * WIDTH / 2;
+    float y = (c.y + 1) * HEIGHT / 2;
+    putpixel(frame, (int)x, (int)y, white);
   }
-  for (int i = 0; i != HEIGHT; i++){
-    putpixel(frame, WIDTH / 2, i, white);
-  }
+  
   writeImage(frame);
 }
 
 int main() {
 	Model mod("rsc/diablo3_pose.obj");
-	render();
+
+	render(mod);
 	cout << "Diablo says : !!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	return 0;
 }
