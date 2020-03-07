@@ -24,6 +24,7 @@ public:
 	Triangle(std::vector<Point3D> pts){
 		points = pts;
 	}
+	
 	virtual ~Triangle(){};
 };
 
