@@ -21,6 +21,8 @@ using namespace std;
 
 void render(Frame &frame, Model &mod){
   Couleur white(1, 1, 1);
+  Couleur red(1, 0, 0);
+  
   int size = mod.vertices.size();
 
   for (int i = 0; i != size; i++){
@@ -29,6 +31,9 @@ void render(Frame &frame, Model &mod){
     float y = (c.y + 1) * HEIGHT / 2;
     frame.putPixel((int)x, (int)y, white);
   }
+
+  frame.drawLine(0, 0, WIDTH, HEIGHT, red);
+  frame.drawLine(WIDTH, 0, 0, HEIGHT, red);
   
   frame.writeImage();
 }

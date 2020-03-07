@@ -17,8 +17,10 @@ class Frame {
   virtual ~Frame(){};
   
   void putPixel(int x, int y, Couleur &c);
+  void drawLine(int x0, int y0, int x1, int y1, Couleur &c);
   void flipVerticaly(bool);
   void writeImage();
+
 };
 
 #endif /* !FRAME_H_ */
