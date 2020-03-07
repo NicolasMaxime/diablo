@@ -21,7 +21,7 @@ using namespace std;
 
 Couleur white(1, 1, 1);
 Couleur red(1, 0, 0);
-
+Couleur blue(0, 0, 1);
 
 void nuageDePoint(Frame &frame, Model &mod){
   int size = mod.vertices.size();
@@ -44,19 +44,29 @@ void render(Frame &frame, Model &mod){
       Point3D &s2 = mod.vertices[v2];
       frame.drawLine(s1, s2, white);
       }
-    
   }
 
   nuageDePoint(frame, mod);
-  frame.writeImage();
+}
+
+void triangle(Frame &frame){
+  Point3D pt1(-0.5, 0.5, 0.1);
+  Point3D pt2(0.8, 0.7, 0.1);
+  Point3D pt3(0.5, -0.4, 0.1);
+
+  frame.drawLine(pt1, pt2, white);
+  frame.drawLine(pt2, pt3, red);
+  frame.drawLine(pt3, pt1, blue);
 }
 
 int main() {
-  Model mod("rsc/diablo3_pose.obj");
+  Model mod("rsc/body.obj");
   Frame frame(WIDTH, HEIGHT);
 
   frame.flipVerticaly(true);
-  render(frame, mod);
-  cout << "Diablo says : !!!Hello World!!!" << endl; // prints !!!Hello World!!!
+  //render(frame, mod);
+  triangle(frame);
+  //cout << "Diablo says : !!!Hello World!!!" << endl; // prints !!!Hello World!!!
+  frame.writeImage();
   return 0;
 }
