@@ -8,7 +8,8 @@ LIBDIR	= ./lib
 SRC	= ./src
 
 SRCS	= $(SRC)/diablo.cpp\
-	  $(SRC)/Model.cpp
+	  $(SRC)/Model.cpp\
+	  $(SRC)/Frame.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 
@@ -31,6 +32,7 @@ clean:
 
 fclean: clean
 	rm -f $(BINARY)
+	rm -f out.ppm
 
 re: fclean all
 
