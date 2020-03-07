@@ -19,22 +19,35 @@
 
 using namespace std;
 
-void render(Frame &frame, Model &mod){
-  Couleur white(1, 1, 1);
-  Couleur red(1, 0, 0);
-  
-  int size = mod.vertices.size();
+Couleur white(1, 1, 1);
+Couleur red(1, 0, 0);
 
+
+void nuageDePoint(Frame &frame, Model &mod){
+  int size = mod.vertices.size();
   for (int i = 0; i != size; i++){
     Point3D &c = mod.vertices[i];
     float x = (c.x + 1) * WIDTH / 2;
     float y = (c.y + 1) * HEIGHT / 2;
-    frame.putPixel((int)x, (int)y, white);
+    frame.putPixel((int)x, (int)y, red);
+    }
+}
+
+void render(Frame &frame, Model &mod){  
+  int size = mod.faces.size();
+  for (int i = 0; i != size; i++){
+    Triangle &t = mod.faces.at(i);
+    for (int j = 0; j != 3; j++){
+      int v1 = t.points[j];
+      int v2 = t.points[(j + 1) %3];
+      Point3D &s1 = mod.vertices[v1];
+      Point3D &s2 = mod.vertices[v2];
+      frame.drawLine(s1, s2, white);
+      }
+    
   }
 
-  frame.drawLine(0, 0, WIDTH, HEIGHT, red);
-  frame.drawLine(WIDTH, 0, 0, HEIGHT, red);
-  
+  nuageDePoint(frame, mod);
   frame.writeImage();
 }
 

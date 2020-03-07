@@ -15,8 +15,8 @@
 class Model {
 public:
 
-  std::vector<Triangle> triangles;			//triangles
-  std::vector<Point3D> vertices;				//vertices
+  std::vector<Triangle> faces;		//triangles
+  std::vector<Point3D> vertices;	//vertices
 
   Model(const char* file);
   virtual ~Model();

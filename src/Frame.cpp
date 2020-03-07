@@ -55,6 +55,17 @@ void Frame::drawLine(int x0, int y0, int x1, int y1, Couleur &c){
   } 
 }
 
+void Frame::drawLine(Point3D &s1, Point3D &s2, Couleur &c){
+  int x0, y0;
+  int x1, y1;
+
+  x0 = (s1.x + 1.) * width / 2.;
+  x1 = (s2.x + 1.) * width / 2.;
+  y0 = (s1.y + 1.) * height / 2.;
+  y1 = (s2.y + 1.) * height / 2.;
+  drawLine(x0, y0, x1, y1, c);
+}
+
 void Frame::writeImage(){
   std::ofstream ofs;
   int nbPixel = height * width;
