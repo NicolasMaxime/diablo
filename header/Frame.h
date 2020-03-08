@@ -2,7 +2,7 @@
 #define FRAME_H_
 
 #include <vector>
-#include "Point3D.h"
+#include "Vecteur.h"
 #include "Couleur.h"
 
 class Frame {
@@ -19,7 +19,7 @@ class Frame {
   
   void putPixel(int x, int y, Couleur &c);
   void drawLine(int x0, int y0, int x1, int y1, Couleur &c);
-  void drawLine(Point3D &s1, Point3D &s2, Couleur &c);
+  void drawLine(Vec3f &s1,Vec3f &s2, Couleur &c);
   void flipVerticaly(bool);
   void writeImage();
 

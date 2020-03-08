@@ -10,7 +10,6 @@
 
 #include <vector>
 #include <sstream>
-#include "Point3D.h"
 
 class Triangle {
 public:

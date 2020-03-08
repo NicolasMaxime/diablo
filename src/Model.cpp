@@ -56,18 +56,12 @@ Model::Model(const char* file) : vertices() {
       if (line.compare(0, 2, "v ") == 0){
 	line.erase(0, 2);
 	get_float_value(line, tab);
-	vertices.push_back(Point3D(tab[0], tab[1], tab[2]));
+	vertices.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
       if (line.compare(0, 2, "f ") == 0){
 	int tmp[3];
 	line.erase(0, 2);
 	faces.push_back(getfaces(line));
-	/*ifs >> trash;
-	while (ifs >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
-	  //for (int i=0; i<3; i++) tmp[i]--; // in wavefront obj all indices start at 1, not zero
-	  //faces.push_back(Triangle(tmp[0], tmp[1], tmp[2]));
-	
-	  }*/
 	}
       }
     ifs.close();

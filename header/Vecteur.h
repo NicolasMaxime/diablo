@@ -10,13 +10,13 @@
 
 #include <sstream>
 
-class Point3D {
+class Vec3f {
 public:
 	float x;
 	float y;
 	float z;
 
-	Point3D(float a, float b, float c){
+	Vec3f(float a, float b, float c){
 		x = a;
 		y = b;
 		z = c;
@@ -28,7 +28,7 @@ public:
 		return (ss.str());
 	}
 
-	virtual ~Point3D(){};
+	virtual ~Vec3f(){};
 };
 
 #endif /* POINT3D_H_ */

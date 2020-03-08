@@ -55,7 +55,7 @@ void Frame::drawLine(int x0, int y0, int x1, int y1, Couleur &c){
   } 
 }
 
-void Frame::drawLine(Point3D &s1, Point3D &s2, Couleur &c){
+void Frame::drawLine(Vec3f &s1, Vec3f &s2, Couleur &c){
   int x0, y0;
   int x1, y1;
 
