@@ -28,11 +28,12 @@ Couleur blue(0., 0., 1.);
 Couleur green(0., 1., 0.);
 
 Vec3f barycentricT(Vec3f &p, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
-  Vec3f ret = Vec3f(pt1.x - p.x, pt2.x - p.x, pt3.x - p.x);
-  Vec3f y = Vec3f(pt1.y - p.y, pt2.y - p.y, pt3.y - p.y);
-
+  Vec3f x = Vec3f(pt3.x - pt1.x, pt2.x - pt1.x, pt1.x - p.x);
+  Vec3f y = Vec3f(pt3.y - pt1.y, pt2.y - pt1.y, pt1.y - p.y);
   
-  return ret.cross(y);
+  Vec3f ret = x.cross(y);
+  ret = Vec3f(1.f - (ret.x + ret.y) /ret.z, ret.y/ret.z, ret.x / ret.z);
+  return ret;
 }
 
 void triangle(Frame &frame, vector<Vec3f> &v, Couleur c, float *zbuffer){
