@@ -23,7 +23,7 @@ void get_float_value(std::string& line, float *tab) {
   }
 }
 
-Triangle getfaces(std::string &line){
+Triangle getfaces(std::string &line, int nb){
   int tab[3];
   int i, j;
   std::string tmp;
@@ -35,7 +35,7 @@ Triangle getfaces(std::string &line){
     std::stringstream sstmp(tmp);
     i = 0;
     while (std::getline(sstmp, information, '/')){
-      if (i == 0){
+      if (i == nb){
 	tab[j] = std::stoi(information) - 1;
 	j = j + 1;
       }
@@ -58,12 +58,17 @@ Model::Model(const char* file) : vertices() {
 	get_float_value(line, tab);
 	vertices.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
-      if (line.compare(0, 2, "f ") == 0){
-	int tmp[3];
+      else if (line.compare(0, 2, "vt") == 0){
 	line.erase(0, 2);
-	faces.push_back(getfaces(line));
-	}
+	get_float_value(line, tab);
+	textures.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
+      else if (line.compare(0, 2, "f ") == 0){
+	line.erase(0, 2);
+	faces.push_back(getfaces(line, 0));
+	texCoord.push_back(getfaces(line, 1));
+      }
+    }
     ifs.close();
   }
   else {

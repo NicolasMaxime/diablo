@@ -17,8 +17,9 @@ class Model {
 public:
 
   std::vector<Triangle> faces;		//triangles
+  std::vector<Triangle> texCoord;
   std::vector<Vec3f> vertices;		//vertices
-
+  std::vector<Vec3f> textures;
   Model(const char* file);
   virtual ~Model();
 
