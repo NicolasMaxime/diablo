@@ -58,8 +58,8 @@ Model::Model(const char* file) : vertices() {
 	get_float_value(line, tab);
 	vertices.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
-      else if (line.compare(0, 2, "vt") == 0){
-	line.erase(0, 2);
+      else if (line.compare(0, 4, "vt  ") == 0){
+	line.erase(0, 4);
 	get_float_value(line, tab);
 	textures.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
