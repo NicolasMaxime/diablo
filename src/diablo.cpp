@@ -112,6 +112,7 @@ int main() {
   Model mod("rsc/diablo3_pose.obj");
   Frame frame(WIDTH, HEIGHT);
 
+  mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));
   srand(time(NULL));
   frame.flipVerticaly(true);
   render(frame, mod);

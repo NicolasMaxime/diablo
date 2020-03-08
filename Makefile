@@ -9,7 +9,8 @@ SRC	= ./src
 
 SRCS	= $(SRC)/diablo.cpp\
 	  $(SRC)/Model.cpp\
-	  $(SRC)/Frame.cpp
+	  $(SRC)/Frame.cpp\
+	  $(SRC)/tgaimage.cpp
 
 OBJS	= $(SRCS:.cpp=.o)
 

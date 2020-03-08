@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string>
+#include <cstring>
 #include "Model.h"
 
 void get_float_value(std::string& line, float *tab) {
@@ -50,7 +50,8 @@ Model::Model(const char* file) : vertices() {
   std::string line;
   float tab[3];
   char trash;
-  
+
+  name = file;
   if(ifs.is_open()){
     while(std::getline(ifs, line)){
       if (line.compare(0, 2, "v ") == 0){
