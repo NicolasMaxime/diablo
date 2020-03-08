@@ -56,12 +56,20 @@ bool inside(float x, float y, Point3D &v0, Point3D &v1){
 }
 
 void triangle(Frame &frame){
-  Point3D pt1(-0.5, 0.5, 0.1);
-  Point3D pt2(0.8, 0.7, 0.1);
-  Point3D pt3(0.5, -0.4, 0.1);
+  Point3D pt1(-0.5, 0.2, 0.1);
+  Point3D pt2(-0.5, -0.2, 0.1);
+  Point3D pt3(0.5, -0, 0.1);
 
-  for (int j = 0; j != HEIGHT; j++){
-    for (int i = 0; i != WIDTH; i++){
+  if (pt1.x >= pt2.x) std::swap(pt1, pt2);
+  if (pt1.x >= pt3.x) std::swap(pt1, pt3);
+  if (pt2.x >= pt3.x) std::swap(pt2, pt3);
+  int x0 = (pt1.x + 1.) * WIDTH / 2.;
+  int x1 = (pt3.x + 1.) * WIDTH / 2.;
+  int y0 = (std::min(pt1.y, std::min(pt2.y, pt3.y)) + 1) * HEIGHT / 2;
+  int y1 = (std::max(pt1.y, std::max(pt2.y, pt3.y)) + 1) * HEIGHT / 2;
+
+  for (int j = y0; j != y1; j++){
+    for (int i = x0; i != x1; i++){
       bool ret = true;
       float x = (float)i / WIDTH * 2. - 1.;
       float y = (float)j / HEIGHT * 2. - 1.;
