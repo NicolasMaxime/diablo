@@ -27,12 +27,21 @@ Couleur red(1., 0., 0.);
 Couleur blue(0., 0., 1.);
 Couleur green(0., 1., 0.);
 
+/*
+** V0_P = u V0_V1 + v V0_V2 d'où u V0_V1 + v V0_V2 + p_V0 = 0;
+** (u, v, 1) orthogonal à V0_V1x, V0_V2x, p_V0x;
+** (u, v, 1) orthogonal à V0_V1y, V0_V2y, p_V0y;
+** d'où [V0_V1x, V0_V2x, p_V0x] x [V0_V1y, V0_V2y, p_V0y] = [u, v, 1]
+*/
+
 Vec3f barycentricT(Vec3i &p, vector<Vec3i> &v){
-  Vec3f x = Vec3f(v[2].x - v[0].x, v[1].x - v[0].x, v[0].x - p.x);
-  Vec3f y = Vec3f(v[2].y - v[0].y, v[1].y - v[0].y, v[0].y - p.y);
-  Vec3f ret = x.cross(y);
-    
-  ret = Vec3f(1.f - (ret.x + ret.y) /ret.z, ret.y/ret.z, ret.x / ret.z);
+  Vec3f vx = Vec3f(v[2].x - v[0].x, v[1].x - v[0].x, v[0].x - p.x);
+  Vec3f vy = Vec3f(v[2].y - v[0].y, v[1].y - v[0].y, v[0].y - p.y);
+  Vec3f ret = vx.cross(vy);
+  if (ret.z >= -1 && ret.z <= 1)
+    ret = Vec3f(0, 0, -1);
+  else
+    ret = Vec3f(1.f - (ret.x + ret.y) /ret.z, ret.y/ret.z, ret.x / ret.z);
   return ret;
 }
 
@@ -91,7 +100,7 @@ void render(Frame &frame, Model &mod){
     normal.normalize();
     float intensity = (float)normal.dot(lightdir);
     if (intensity > 0) {
-      Couleur c = Couleur(1, 1, 1);
+      Couleur c = blue;
       c.mult(intensity);
       triangle(frame, s, c, zbuffer);
     }
