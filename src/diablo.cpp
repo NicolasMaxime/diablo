@@ -22,6 +22,7 @@ using namespace std;
 Couleur white(1, 1, 1);
 Couleur red(1, 0, 0);
 Couleur blue(0, 0, 1);
+Couleur green(0, 1, 0);
 
 void nuageDePoint(Frame &frame, Model &mod){
   int size = mod.vertices.size();
@@ -49,14 +50,33 @@ void render(Frame &frame, Model &mod){
   nuageDePoint(frame, mod);
 }
 
+bool inside(float x, float y, Point3D &v0, Point3D &v1){
+  float calc = (x - v0.x) * (v1.y - v0.y) - (y - v0.y) * (v1.x - v0.x);
+  return (calc > 0);
+}
+
 void triangle(Frame &frame){
   Point3D pt1(-0.5, 0.5, 0.1);
   Point3D pt2(0.8, 0.7, 0.1);
   Point3D pt3(0.5, -0.4, 0.1);
 
-  frame.drawLine(pt1, pt2, white);
+  for (int j = 0; j != HEIGHT; j++){
+    for (int i = 0; i != WIDTH; i++){
+      bool ret = true;
+      float x = (float)i / WIDTH * 2. - 1.;
+      float y = (float)j / HEIGHT * 2. - 1.;
+      ret = inside(x, y, pt1, pt2);
+      ret &= inside(x, y, pt2, pt3);
+      ret &= inside(x, y, pt3, pt1);
+      if (ret){
+	frame.putPixel(i, j, white);
+      }
+    }
+  }
+  frame.drawLine(pt1, pt2, green);
   frame.drawLine(pt2, pt3, red);
   frame.drawLine(pt3, pt1, blue);
+
 }
 
 int main() {
