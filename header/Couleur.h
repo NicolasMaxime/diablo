@@ -12,16 +12,17 @@ class Couleur {
     g = G;
     b = B;
   }
-
-  Couleur(){};
-
-  void mult(float k){
-    r *= k;
-    g *= k;
-    b *= k;
-  }
   
-  virtual ~Couleur(){};
+  void mult(float k){
+    r = r * k;
+    g = g * k;
+    b = b * k;
+  }
+
+  Couleur(){;}
+  virtual ~Couleur(){;}
 };
+
+
 
 #endif /* !COULEUR_H_ */

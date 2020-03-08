@@ -22,10 +22,10 @@
 #define ALEATOIRE (rand() / (float) RAND_MAX)
 using namespace std;
 
-Couleur white(1, 1, 1);
-Couleur red(1, 0, 0);
-Couleur blue(0, 0, 1);
-Couleur green(0, 1, 0);
+Couleur white(1., 1., 1.);
+Couleur red(1., 0., 0.);
+Couleur blue(0., 0., 1.);
+Couleur green(0., 1., 0.);
 
 Vec3f barycentricT(Vec3f &p, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
   Vec3f ret = Vec3f(pt1.x - p.x, pt2.x - p.x, pt3.x - p.x);
@@ -34,13 +34,12 @@ Vec3f barycentricT(Vec3f &p, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
   return ret.cross(y);
 }
 
-void triangle(Frame &frame, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
+void triangle(Frame &frame, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3, Couleur c){
   int x0 = (std::min(pt1.x, std::min(pt2.x, pt3.x)) + 1) * WIDTH / 2.;
   int x1 = (std::max(pt1.x, std::max(pt2.x, pt3.x)) + 1) * WIDTH / 2.;
   int y0 = (std::min(pt1.y, std::min(pt2.y, pt3.y)) + 1) * HEIGHT / 2.;
   int y1 = (std::max(pt1.y, std::max(pt2.y, pt3.y)) + 1) * HEIGHT / 2.;
   
-  Couleur c = Couleur(ALEATOIRE, ALEATOIRE, ALEATOIRE);
   for (int j = y0; j != y1; j++){
     for (int i = x0; i != x1; i++){
       bool ret = true;
@@ -53,9 +52,6 @@ void triangle(Frame &frame, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
       }
     }
   }
-  frame.drawLine(pt1, pt2, white);
-  frame.drawLine(pt2, pt3, white);
-  frame.drawLine(pt3, pt1, white);
 }
 
 void nuageDePoint(Frame &frame, Model &mod){
@@ -69,13 +65,23 @@ void nuageDePoint(Frame &frame, Model &mod){
 }
 
 void render(Frame &frame, Model &mod){  
+
   int size = mod.faces.size();
+
+  Vec3f lightdir = Vec3f(0, 0, 1); 
   for (int i = 0; i != size; i++){
     Triangle &t = mod.faces.at(i);
     Vec3f &s1 = mod.vertices.at(t.points[0]);
     Vec3f &s2 = mod.vertices.at(t.points[1]);
     Vec3f &s3 = mod.vertices.at(t.points[2]);
-    triangle(frame, s1, s2, s3);
+    Vec3f normal = Vec3f(s2.x - s1.x, s2.y - s1.y, s2.z - s1.z);
+    normal = normal.cross(Vec3f(s3.x - s2.x, s3.y - s2.y, s3.z - s2.z));
+    normal.normalize();
+    float intensity = (float)normal.dot(lightdir);
+    if (intensity > 0) {
+      Couleur c = Couleur(intensity, intensity, intensity);
+      triangle(frame, s1, s2, s3, c);
+    }
   }
 }
 
@@ -83,6 +89,7 @@ void render(Frame &frame, Model &mod){
 int main() {
   Model mod("rsc/diablo3_pose.obj");
   Frame frame(WIDTH, HEIGHT);
+
   srand(time(NULL));
   frame.flipVerticaly(true);
   render(frame, mod);
