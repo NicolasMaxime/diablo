@@ -34,21 +34,29 @@ Vec3f barycentricT(Vec3f &p, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
   return ret.cross(y);
 }
 
-void triangle(Frame &frame, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3, Couleur c){
-  int x0 = (std::min(pt1.x, std::min(pt2.x, pt3.x)) + 1) * WIDTH / 2.;
-  int x1 = (std::max(pt1.x, std::max(pt2.x, pt3.x)) + 1) * WIDTH / 2.;
-  int y0 = (std::min(pt1.y, std::min(pt2.y, pt3.y)) + 1) * HEIGHT / 2.;
-  int y1 = (std::max(pt1.y, std::max(pt2.y, pt3.y)) + 1) * HEIGHT / 2.;
+void triangle(Frame &frame, vector<Vec3f> &v, Couleur c, float *zbuffer){
+
+  int x0 = (std::min(v[0].x, std::min(v[1].x, v[2].x)) + 1) * WIDTH / 2.;
+  int x1 = (std::max(v[0].x, std::max(v[1].x, v[2].x)) + 1) * WIDTH / 2.;
+  int y0 = (std::min(v[0].y, std::min(v[1].y, v[2].y)) + 1) * HEIGHT / 2.;
+  int y1 = (std::max(v[0].y, std::max(v[1].y, v[2].y)) + 1) * HEIGHT / 2.;
   
   for (int j = y0; j != y1; j++){
     for (int i = x0; i != x1; i++){
       bool ret = true;
       float x = (float)i / WIDTH * 2. - 1.;
       float y = (float)j / HEIGHT * 2. - 1.;
+      float z = 0;
       Vec3f p = Vec3f(x, y, 0);
-      Vec3f bary = barycentricT(p, pt1, pt2, pt3);
+      Vec3f bary = barycentricT(p, v[0], v[1], v[2]);
       if (bary.x >= 0 && bary.y >= 0 && bary.z >= 0){
-	frame.putPixel(i, j, c);
+	for (int i = 0; i != 3; i++)
+	  z += v[i].z;
+	int tmp = i + j * WIDTH;
+	if (zbuffer[tmp] < z){
+      	  zbuffer[tmp] = z;
+	  frame.putPixel(i, j, c);
+	}
       }
     }
   }
@@ -67,20 +75,26 @@ void nuageDePoint(Frame &frame, Model &mod){
 void render(Frame &frame, Model &mod){  
 
   int size = mod.faces.size();
-
-  Vec3f lightdir = Vec3f(0, 0, 1); 
+  Vec3f lightdir = Vec3f(0, 0.5, 1);
+  float *zbuffer = new float[WIDTH*HEIGHT];
+  for (int i=0; i != WIDTH * HEIGHT; i++)
+    zbuffer[i] = -std::numeric_limits<float>::max();
   for (int i = 0; i != size; i++){
+    std::vector<Vec3f> v; // vertices
     Triangle &t = mod.faces.at(i);
-    Vec3f &s1 = mod.vertices.at(t.points[0]);
-    Vec3f &s2 = mod.vertices.at(t.points[1]);
-    Vec3f &s3 = mod.vertices.at(t.points[2]);
-    Vec3f normal = Vec3f(s2.x - s1.x, s2.y - s1.y, s2.z - s1.z);
-    normal = normal.cross(Vec3f(s3.x - s2.x, s3.y - s2.y, s3.z - s2.z));
+    for (int j = 0; j != 3; j++){
+      Vec3f &tmp = mod.vertices.at(t.points[j]);
+      v.push_back(tmp);
+    }
+    Vec3f normal = Vec3f(v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z);
+    Vec3f tmp = Vec3f(v[2].x -  v[1].x,  v[2].y - v[1].y, v[2].z - v[1].z);
+    normal = normal.cross(tmp);
     normal.normalize();
     float intensity = (float)normal.dot(lightdir);
     if (intensity > 0) {
+      //std::cout << intensity << endl;
       Couleur c = Couleur(intensity, intensity, intensity);
-      triangle(frame, s1, s2, s3, c);
+      triangle(frame, v, c, zbuffer);
     }
   }
 }
