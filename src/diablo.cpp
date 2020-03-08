@@ -27,10 +27,9 @@ Couleur red(1., 0., 0.);
 Couleur blue(0., 0., 1.);
 Couleur green(0., 1., 0.);
 
-Vec3f barycentricT(Vec3f &p, Vec3f &pt1, Vec3f &pt2, Vec3f &pt3){
-  Vec3f x = Vec3f(pt3.x - pt1.x, pt2.x - pt1.x, pt1.x - p.x);
-  Vec3f y = Vec3f(pt3.y - pt1.y, pt2.y - pt1.y, pt1.y - p.y);
-  
+Vec3f barycentricT(Vec3f &p, vector<Vec3f> &v){
+  Vec3f x = Vec3f(v[2].x - v[0].x, v[1].x - v[0].x, v[0].x - p.x);
+  Vec3f y = Vec3f(v[2].y - v[0].y, v[1].y - v[0].y, v[0].y - p.y);
   Vec3f ret = x.cross(y);
   ret = Vec3f(1.f - (ret.x + ret.y) /ret.z, ret.y/ret.z, ret.x / ret.z);
   return ret;
@@ -44,19 +43,18 @@ void triangle(Frame &frame, vector<Vec3f> &v, Couleur c, float *zbuffer){
   int y1 = (std::max(v[0].y, std::max(v[1].y, v[2].y)) + 1) * HEIGHT / 2.;
   
   for (int j = y0; j != y1; j++){
+    float y = 2.0 * (j / (float)HEIGHT) - 1.; 
     for (int i = x0; i != x1; i++){
-      bool ret = true;
-      float x = (float)i / WIDTH * 2. - 1.;
-      float y = (float)j / HEIGHT * 2. - 1.;
-      float z = 0;
+      float x = 2. * (i / (float)WIDTH) -1.;
       Vec3f p = Vec3f(x, y, 0);
-      Vec3f bary = barycentricT(p, v[0], v[1], v[2]);
+      Vec3f bary = barycentricT(p, v);
       if (bary.x >= 0 && bary.y >= 0 && bary.z >= 0){
-	for (int i = 0; i != 3; i++)
-	  z += v[i].z;
-	int tmp = i + j * WIDTH;
-	if (zbuffer[tmp] < z){
-      	  zbuffer[tmp] = z;
+	for (int i = 0; i != 3; i++){
+	  p.z += v[i].z * bary.z;
+	}
+	int pos = i + j * WIDTH;
+	if (zbuffer[pos] < p.z) {
+	  zbuffer[pos] = p.z;
 	  frame.putPixel(i, j, c);
 	}
       }
@@ -94,7 +92,6 @@ void render(Frame &frame, Model &mod){
     normal.normalize();
     float intensity = (float)normal.dot(lightdir);
     if (intensity > 0) {
-      //std::cout << intensity << endl;
       Couleur c = Couleur(intensity, intensity, intensity);
       triangle(frame, v, c, zbuffer);
     }
