@@ -17,7 +17,7 @@
 class Model {
 public:
   const char* name;
-  TGAImage *diffuse;
+  TGAImage diffuse;
   
   std::vector<Triangle> faces;		//triangles
   std::vector<Triangle> texCoord;
@@ -30,8 +30,8 @@ public:
     std::string tag(name);
     tag = tag.substr(0, tag.size() - strlen(".obj"));
     tag = tag + "_diffuse.tga";
-    diffuse = &img;
-    diffuse->read_tga_file((char*)tag.c_str());
+    diffuse = img;
+    diffuse.read_tga_file((char*)tag.c_str());
   }
   virtual ~Model();
 

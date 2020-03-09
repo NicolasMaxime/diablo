@@ -62,6 +62,16 @@ public:
     z = z / norme;
   }
 	
+  float	&operator[](int i){
+    if (i == 0)
+      return this->x;
+    else if (i == 1)
+      return this->y;
+    else
+      return this->z;
+  }
+
+
   virtual ~Vec3f(){};
 };
 
@@ -86,7 +96,32 @@ public:
   float norm(){
     return (sqrt(x*x + y*y + z*z));
   }
+  
+  float dot(Vec3f v){
+    float ret;
+	  
+    ret = x * v.x + y * v.y + z * v.z;
+    return ret;
+  }
 
+  Vec3i cross(Vec3f v){
+    Vec3i ret;
+	  
+    ret.x = y * v.z - z * v.y;
+    ret.y = z * v.x - x * v.z;
+    ret.z = x * v.y - y * v.x;
+    return ret;
+  }
+
+  int	&operator[](int i){
+    if (i == 0)
+      return this->x;
+    else if (i == 1)
+      return this->y;
+    else
+      return this->z;
+  }
+  
   virtual ~Vec3i(){};
 };
 

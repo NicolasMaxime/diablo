@@ -66,6 +66,10 @@ void Frame::drawLine(Vec3f &s1, Vec3f &s2, Couleur &c){
   drawLine(x0, y0, x1, y1, c);
 }
 
+void Frame::drawLine(Vec3i &s1, Vec3i &s2, Couleur &c){
+  drawLine(s1.x, s1.y, s2.x, s2.y, c);
+}
+
 void Frame::writeImage(){
   std::ofstream ofs;
   int nbPixel = height * width;

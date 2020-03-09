@@ -33,7 +33,6 @@ clean:
 
 fclean: clean
 	rm -f $(BINARY)
-	rm -f out.ppm
 
 re: fclean all
 
