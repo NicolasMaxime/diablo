@@ -20,7 +20,7 @@ void Frame::putPixel(int x, int y, Couleur &c){
   if (flipVertical)
     tmp = height - y;
   tmp = tmp * width + x;
-  if (tmp > 0 && tmp < nbPix) {
+  if (x > 0 && tmp > 0 && tmp < nbPix) {
     Couleur &ref = pixmap.at(tmp);
     ref = c;
   }
