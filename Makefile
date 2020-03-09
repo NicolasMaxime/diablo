@@ -7,7 +7,7 @@ LIBDIR	= ./lib
 
 SRC	= ./src
 
-SRCS	= $(SRC)/diablo.cpp\
+SRCS	= $(SRC)/main.cpp\
 	  $(SRC)/Model.cpp\
 	  $(SRC)/Frame.cpp\
 	  $(SRC)/tgaimage.cpp

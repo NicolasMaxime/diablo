@@ -18,8 +18,7 @@
 
 #define WIDTH 1024
 #define HEIGHT 768
-#define MAX RAND_MAX
-#define ALEATOIRE (rand() / (float) RAND_MAX)
+
 using namespace std;
 
 Couleur white(1., 1., 1.);
@@ -76,7 +75,7 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v,	\
 	for (int i = 0; i != 3; i++){
 	  z += v[i].z * bary[i];
 	}
-	int pos = x + y * WIDTH;
+	int pos = x + y * frame.getWidth();
 	if (zbuffer[pos] < z){
 	  zbuffer[pos] = z;
 	  Couleur c = blue;
@@ -84,31 +83,19 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v,	\
 	  int tmpx = (eye.x) * WIDTH / 2;
 	  int tmpy = (eye.y) * HEIGHT / 2;
 	  getText(mod, texs, bary, c);
+	  c.mult(intensity);
 	  frame.putPixel(x - tmpx, y - tmpy, c);
 	}
       }
     }
   }
-  /*  frame.drawLine(v[0], v[1], red);
-  frame.drawLine(v[1], v[2], red);
-  frame.drawLine(v[2], v[0], red);*/
-}
-
-void nuageDePoint(Frame &frame, Model &mod){
-  int size = mod.vertices.size();
-  for (int i = 0; i != size; i++){
-    Vec3f &c = mod.vertices[i];
-    float x = (c.x + 1) * WIDTH / 2;
-    float y = (c.y + 1) * HEIGHT / 2;
-    frame.putPixel((int)x, (int)y, red);
-    }
 }
 
 void render(Frame &frame, Model &mod){  
   
   int size = mod.faces.size();
   float *zbuffer = new float[WIDTH*HEIGHT];
-  for (int z=0; z != WIDTH * HEIGHT; z++)
+  for (int z=0; z != frame.getNbPix(); z++)
     zbuffer[z] = -std::numeric_limits<float>::max();
   for (int i = 0; i != size; i++){
     std::vector<Vec3f> v(3); // vertices float
@@ -120,7 +107,7 @@ void render(Frame &frame, Model &mod){
       v[j] = mod.vertices.at(t.points[j]);
       s[j] = Vec3f((v[j].x + 1.) * (float)WIDTH / 2., (v[j].y + 1.) * (float)HEIGHT / 2., v[j].z);
       Vec3f &tmp = mod.textures.at(t2.points[j]);
-      texs[j] = Vec3i(tmp.x *  1024, tmp.y * 1024);
+      texs[j] = Vec3i(tmp.x * 1024, tmp.y * 1024);
     }
     Vec3f normal = Vec3f(v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z);
     Vec3f tmp = Vec3f(v[0].x -  v[2].x,  v[0].y - v[2].y, v[0].z - v[2].z);
@@ -133,16 +120,20 @@ void render(Frame &frame, Model &mod){
 }
 
 
-int main() {
-  Model mod("rsc/diablo3_pose.obj");
+int main(int ac, char **av) {
+  Model mod;
+
+  if (ac >= 2 )
+    mod = Model(av[1]);
+  else 
+    mod = Model("rsc/diablo3_pose.obj");
+
   Frame frame(WIDTH, HEIGHT);
   frame.flipVerticaly(true);
-
   mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));
   mod.diffuse.flip_vertically();
-  srand(time(NULL));
   render(frame, mod);
-  cout << "Diablo says : !!!Hello World!!!" << endl;
+  cout << "Sucess" << endl;
   frame.writeImage();
   return 0;
 }

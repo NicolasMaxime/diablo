@@ -45,7 +45,7 @@ Triangle getfaces(std::string &line, int nb){
   return Triangle(tab[0], tab[1], tab[2]);
 }
 
-Model::Model(const char* file) : vertices() {
+Model::Model(const char* file) {
   std::ifstream ifs(file);
   std::string line;
   float tab[3];
@@ -74,6 +74,7 @@ Model::Model(const char* file) : vertices() {
   }
   else {
     std::cout << "Unable to open file : " << file << std::endl;
+    exit (-1);
   }
 }
 

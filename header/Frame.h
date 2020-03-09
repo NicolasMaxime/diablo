@@ -19,6 +19,7 @@ class Frame {
 
   int getWidth() { return width; }
   int getHeight() { return height; }
+  int getNbPix() { return nbPix; }
   void putPixel(int x, int y, Couleur &c);
   void drawLine(int x0, int y0, int x1, int y1, Couleur &c);
   void drawLine(Vec3f &s1,Vec3f &s2, Couleur &c);

@@ -25,14 +25,17 @@ public:
   std::vector<Vec3f> textures;
 
   Model(const char* file);
-
-  void loadDiffuse(TGAImage img){
+  
+  bool loadDiffuse(TGAImage img){
     std::string tag(name);
     tag = tag.substr(0, tag.size() - strlen(".obj"));
     tag = tag + "_diffuse.tga";
     diffuse = img;
-    diffuse.read_tga_file((char*)tag.c_str());
+    bool ret = diffuse.read_tga_file((char*)tag.c_str());
+    return ret;
   }
+
+  Model(){;}
   virtual ~Model();
 
 };
