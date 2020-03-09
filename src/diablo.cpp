@@ -28,6 +28,7 @@ Couleur blue(0., 0., 1.);
 Couleur green(0., 1., 0.);
 
 Vec3f light_dir = Vec3f(0, 0, -1);
+Vec3f eye(0, 0, 0);
 
 /*
 ** V0_P = u V0_V1 + v V0_V2 d'où u V0_V1 + v V0_V2 + p_V0 = 0;
@@ -80,8 +81,10 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v,	\
 	  zbuffer[pos] = z;
 	  Couleur c = blue;
 	  c.mult(intensity);
+	  int tmpx = (eye.x) * WIDTH / 2;
+	  int tmpy = (eye.y) * HEIGHT / 2;
 	  getText(mod, texs, bary, c);
-	  frame.putPixel(x, y, c);
+	  frame.putPixel(x - tmpx, y - tmpy, c);
 	}
       }
     }

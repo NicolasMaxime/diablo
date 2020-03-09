@@ -10,15 +10,20 @@ Frame::Frame(int w, int h) {
   flipVertical = false;
   width = w;
   height = h;
-    
+  nbPix = w * h;  
 }
 
 void Frame::putPixel(int x, int y, Couleur &c){
-  if (flipVertical){
-    y = height - y;
+  int tmp;
+
+  tmp = y;
+  if (flipVertical)
+    tmp = height - y;
+  tmp = tmp * width + x;
+  if (tmp > 0 && tmp < nbPix) {
+    Couleur &ref = pixmap.at(tmp);
+    ref = c;
   }
-  Couleur &ref = pixmap.at(y * width + x);
-  ref = c;
 }
 
 void Frame::flipVerticaly(bool b){
