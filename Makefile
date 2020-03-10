@@ -10,6 +10,7 @@ SRC	= ./src
 SRCS	= $(SRC)/main.cpp\
 	  $(SRC)/Model.cpp\
 	  $(SRC)/Frame.cpp\
+	  $(SRC)/Matrix.cpp\
 	  $(SRC)/tgaimage.cpp
 
 OBJS	= $(SRCS:.cpp=.o)

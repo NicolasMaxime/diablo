@@ -15,6 +15,7 @@
 #include "Model.h"
 #include "Couleur.h"
 #include "Frame.h"
+#include "Matrix.h"
 
 #define WIDTH 1024
 #define HEIGHT 768
@@ -137,5 +138,6 @@ int main(int ac, char **av) {
   render(frame, mod);
   cout << "Sucess" << endl;
   frame.writeImage();
+
   return 0;
 }
