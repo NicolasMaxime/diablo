@@ -18,6 +18,7 @@ class Model {
 public:
   const char* name;
   TGAImage diffuse;
+  bool is_diffuse;
   
   std::vector<Triangle> faces;		//triangles
   std::vector<Triangle> texCoord;
@@ -26,13 +27,12 @@ public:
 
   Model(const char* file);
   
-  bool loadDiffuse(TGAImage img){
+  void loadDiffuse(TGAImage img){
     std::string tag(name);
     tag = tag.substr(0, tag.size() - strlen(".obj"));
     tag = tag + "_diffuse.tga";
     diffuse = img;
-    bool ret = diffuse.read_tga_file((char*)tag.c_str());
-    return ret;
+    is_diffuse = diffuse.read_tga_file((char*)tag.c_str());
   }
 
   Model(){;}

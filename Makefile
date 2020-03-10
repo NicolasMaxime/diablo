@@ -1,5 +1,5 @@
 
-BINARY	= diablo
+BINARY	= render
 
 IDIR	= ./header
 

@@ -18,10 +18,14 @@ void get_float_value(std::string& line, float *tab) {
   i = 0;
   std::istringstream ss(line);
   while (std::getline(ss, token, ' ')){
-    tab[i] = std::stof(token);
-    i = i + 1;
+    if (token.compare(" ") != 0){
+      tab[i] = std::stof(token);
+      i = i + 1;
+    }
   }
 }
+
+
 
 Triangle getfaces(std::string &line, int nb){
   int tab[3];
@@ -45,6 +49,14 @@ Triangle getfaces(std::string &line, int nb){
   return Triangle(tab[0], tab[1], tab[2]);
 }
 
+void epur_line(std::string &line, int nb){
+  int i = nb;
+  while (line.at(i) == ' '){
+    i = i + 1;
+  }
+  line.erase(0, i);
+}
+
 Model::Model(const char* file) {
   std::ifstream ifs(file);
   std::string line;
@@ -55,17 +67,17 @@ Model::Model(const char* file) {
   if(ifs.is_open()){
     while(std::getline(ifs, line)){
       if (line.compare(0, 2, "v ") == 0){
-	line.erase(0, 2);
+	epur_line(line, 2);
 	get_float_value(line, tab);
 	vertices.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
-      else if (line.compare(0, 4, "vt  ") == 0){
-	line.erase(0, 4);
+      else if (line.compare(0, 2, "vt") == 0){
+	epur_line(line, 2);
 	get_float_value(line, tab);
 	textures.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
       else if (line.compare(0, 2, "f ") == 0){
-	line.erase(0, 2);
+	epur_line(line, 2);
 	faces.push_back(getfaces(line, 0));
 	texCoord.push_back(getfaces(line, 1));
       }

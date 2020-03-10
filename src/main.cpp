@@ -78,12 +78,13 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v,	\
 	int pos = x + y * frame.getWidth();
 	if (zbuffer[pos] < z){
 	  zbuffer[pos] = z;
-	  Couleur c = blue;
+	  Couleur c = red;
+	  if (mod.is_diffuse);
+	    getText(mod, texs, bary, c);
 	  c.mult(intensity);
-	  int tmpx = (eye.x) * WIDTH / 2;
-	  int tmpy = (eye.y) * HEIGHT / 2;
-	  getText(mod, texs, bary, c);
-	  c.mult(intensity);
+
+	  int tmpx = (eye.x) * frame.getWidth() / 2;
+	  int tmpy = (eye.y) * frame.getHeight() / 2;
 	  frame.putPixel(x - tmpx, y - tmpy, c);
 	}
       }
@@ -109,20 +110,21 @@ void render(Frame &frame, Model &mod){
       Vec3f &tmp = mod.textures.at(t2.points[j]);
       texs[j] = Vec3i(tmp.x * 1024, tmp.y * 1024);
     }
+    
     Vec3f normal = Vec3f(v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z);
     Vec3f tmp = Vec3f(v[0].x -  v[2].x,  v[0].y - v[2].y, v[0].z - v[2].z);
     normal = normal.cross(tmp);
     normal.normalize();
     float intensity = (float)normal.dot(light_dir);
-    if (intensity > 0)
-      triangle(mod, frame, s, zbuffer, texs, std::abs(intensity));
+    if (intensity > 0){
+      triangle(mod, frame, s, zbuffer, texs, intensity);
+    }
   }
 }
 
 
 int main(int ac, char **av) {
   Model mod;
-
   if (ac >= 2 )
     mod = Model(av[1]);
   else 
