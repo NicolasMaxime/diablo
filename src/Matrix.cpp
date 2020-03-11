@@ -7,21 +7,6 @@ void showError(int line, int col){
   std::cout << std::endl;
 }
 
-Matrix::Matrix(const int line, const int col){
-  nLine = line;
-  nCol = col;
-
-  if ((m = new float*[line]) == NULL){
-    showError(line, col);
-    exit (-1);
-  }
-  for (int i = 0; i != line; i++){
-    if ((m[i] = new float[col]) == NULL){
-      showError(line, col);
-    }
-  }
-}
-
 void Matrix::display(){
   for (int i = 0; i != nLine; i++){
     std::cout << "[ ";
@@ -30,12 +15,13 @@ void Matrix::display(){
     }
     std::cout <<"]" << std::endl;
   }
+  std::cout << std::endl;
 }
 
 void Matrix::one(){
   for (int i = 0; i != nLine; i++){
     for (int j = 0; j != nCol; j++){
-      m[i][j] = 1;
+      m[i][j] = 1.;
     }
   }
 }
@@ -51,9 +37,56 @@ void Matrix::identity(){
   }
 }
 
+Matrix Matrix::transpose() const{
+  Matrix ret(nCol, nLine);
+
+  for (int i = 0; i != nLine; i++){
+    for (int j = 0; j != nCol; j++){
+      ret[j][i] = m[i][j];
+    }
+  }
+  return ret;
+}
+
+Matrix::Matrix(const Matrix &c){
+  nLine = c.line();
+  nCol = c.col();
+
+  if ((m = new float*[nLine]) == NULL){
+    showError(nLine, nCol);
+    exit (-1);
+  }
+  for (int i = 0; i != nLine; i++){
+    if ((m[i] = new float[nCol]) == NULL){
+      showError(nLine, nCol);
+    }
+    for (int j = 0; j != nCol; j++){
+      m[i][j] = c[i][j];
+    }
+  }
+  std::cout  << "cons copy display : " << std::endl;
+  display();
+}
+
+Matrix::Matrix(const int line, const int col){
+  nLine = line;
+  nCol = col;
+
+  if ((m = new float*[line]) == NULL){
+    showError(line, col);
+    exit (-1);
+  }
+  for (int i = 0; i != line; i++){
+    if ((m[i] = new float[col]) == NULL){
+      showError(line, col);
+    }
+  }
+}
+
 Matrix::~Matrix(){
   for (int i = 0; i != nLine; i++){
-    delete m[i];
+    delete [] m[i];
   }
-  delete m;
+  if (nLine > 0)
+    delete [] m; 
 }

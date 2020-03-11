@@ -82,6 +82,10 @@ Model::Model(const char* file) {
 	texCoord.push_back(getfaces(line, 1));
       }
     }
+    std::cout << "read : " << std::endl;
+    std::cout << "-> " << vertices.size() << " vertices\n"\
+	      << "-> " << textures.size() << " textures vertices\n"\
+	      << "-> " << faces.size() << " faces" << std::endl;
     ifs.close();
   }
   else {

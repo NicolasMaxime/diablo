@@ -126,12 +126,12 @@ void render(Frame &frame, Model &mod){
 
 int main(int ac, char **av) {
   Model mod;
+  Frame frame(WIDTH, HEIGHT);
+  
   if (ac >= 2 )
     mod = Model(av[1]);
   else 
     mod = Model("rsc/diablo3_pose.obj");
-
-  Frame frame(WIDTH, HEIGHT);
   frame.flipVerticaly(true);
   mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));
   mod.diffuse.flip_vertically();
