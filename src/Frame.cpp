@@ -88,12 +88,12 @@ void Frame::writeImage(){
   ofs << "P6\n" << width << " " << height << "\n255\n";
   for (size_t i = 0; i != nbPixel; ++i) {
     Couleur &c = pixmap.at(i);
-    float max = std::max(c.r, std::max(c.g, c.b));
+    float max = c.getMaxValue();
     if (max>1)
       c.mult(1./max);
-    ofs << (char)(255 * std::max(0.f, std::min(1.f, c.r)));
-    ofs << (char)(255 * std::max(0.f, std::min(1.f, c.g)));
-    ofs << (char)(255 * std::max(0.f, std::min(1.f, c.b)));
+    ofs << (char)(255 * c.r);
+    ofs << (char)(255 * c.g);
+    ofs << (char)(255 * c.b);
   }
   ofs.close();
 

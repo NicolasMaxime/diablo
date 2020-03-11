@@ -10,6 +10,9 @@
 
 #include <sstream>
 #include <cmath>
+#include "Matrix.h"
+
+class Matrix;
 
 class Vec3f {
 public:
@@ -61,7 +64,7 @@ public:
     y = y / norme;
     z = z / norme;
   }
-	
+  
   float	&operator[](int i){
     if (i == 0)
       return this->x;
@@ -112,7 +115,7 @@ public:
     ret.z = x * v.y - y * v.x;
     return ret;
   }
-
+  
   int	&operator[](int i){
     if (i == 0)
       return this->x;
@@ -124,5 +127,8 @@ public:
   
   virtual ~Vec3i(){};
 };
+
+Matrix VectoMat(Vec3f &v);
+Vec3f MatToVec(Matrix m);
 
 #endif /* POINT3D_H_ */

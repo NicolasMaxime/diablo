@@ -18,10 +18,13 @@ class Model {
 public:
   const char* name;
   TGAImage diffuse;
+  TGAImage normals;
   bool is_diffuse;
+  bool is_normal;
   
   std::vector<Triangle> faces;		//triangles
-  std::vector<Triangle> texCoord;
+  std::vector<Triangle> texCoord;	//textures of triangles
+  std::vector<Triangle> normCoord;	//Normal of triangles
   std::vector<Vec3f> vertices;		//vertices
   std::vector<Vec3f> textures;
 
@@ -35,6 +38,14 @@ public:
     is_diffuse = diffuse.read_tga_file((char*)tag.c_str());
   }
 
+  void loadNormal(TGAImage img){
+    std::string tag(name);
+    tag = tag.substr(0, tag.size() - strlen(".obj"));
+    tag = tag + "_nm.tga";
+    normals = img;
+    is_normal = normals.read_tga_file((char*)tag.c_str());
+  }
+  
   Model(){;}
   virtual ~Model();
 

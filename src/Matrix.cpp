@@ -9,9 +9,11 @@ void showError(int line, int col){
 
 void Matrix::display(){
   for (int i = 0; i != nLine; i++){
-    std::cout << "[ ";
+    std::cout << "[";
     for (int j = 0; j != nCol; j++){
-      std::cout << m[i][j] << " ";
+      std::cout << m[i][j];
+      if (j != nCol - 1)
+	std::cout << "\t";
     }
     std::cout <<"]" << std::endl;
   }
@@ -64,8 +66,6 @@ Matrix::Matrix(const Matrix &c){
       m[i][j] = c[i][j];
     }
   }
-  std::cout  << "cons copy display : " << std::endl;
-  display();
 }
 
 Matrix::Matrix(const int line, const int col){

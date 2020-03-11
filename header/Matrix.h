@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include "Vecteur.h"
+
+class Vec3f;
 
 class Matrix{
  private:
@@ -55,7 +58,7 @@ class Matrix{
     return Proxy(m[ind]);
   }
 
-  Matrix operator*(Matrix &m2){
+  Matrix operator*(Matrix m2){
     if (nCol != m2.line()){
       std::cout << "Can't multiply Matrixs : " << nCol << " columns * ";
       std::cout << m2.line() << " lines" << std::endl;
@@ -68,7 +71,7 @@ class Matrix{
 	for(int j = 0; j != m2.col(); j++){
 	  tmp = 0;
 	  for(int k = 0; k != m2.line(); k++){
-	      tmp += m[i][j] * m2[k][j];	      
+	      tmp += m[i][k] * m2[k][j];	      
 	  }
 	  ret[i][j] = tmp;
 	}	

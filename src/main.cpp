@@ -17,17 +17,27 @@
 #include "rasterizer.h"
 #include "tgaimage.h"
 
-#define WIDTH 1024
-#define HEIGHT 768
+#define WIDTH 1080
+#define HEIGHT 720
 
 using namespace std;
 
 Vec3f light_dir = Vec3f(0, 0, -1);
 
-void render(Frame &frame, Model &mod){  
+Matrix matrix_win(){
+  Matrix m(4, 4);
   
+  m.identity();
+  m[0][0] = WIDTH / 2;
+  m[1][1] = HEIGHT / 2;
+  return m;
+}
+
+void render(Frame &frame, Model &mod){  
   int size = mod.faces.size();
   float *zbuffer = new float[WIDTH*HEIGHT];
+  Matrix screen = matrix_win();
+  
   for (int z=0; z != frame.getNbPix(); z++)
     zbuffer[z] = -std::numeric_limits<float>::max();
   for (int i = 0; i != size; i++){
@@ -38,7 +48,8 @@ void render(Frame &frame, Model &mod){
     Triangle &t2 = mod.texCoord.at(i);
     for (int j = 0; j != 3; j++){
       v[j] = mod.vertices.at(t.points[j]);
-      s[j] = Vec3f((v[j].x + 1.) * (float)WIDTH / 2., (v[j].y + 1.) * (float)HEIGHT / 2., v[j].z);
+      s[j] = Vec3f((v[j].x + 1.), (v[j].y + 1.), v[j].z);
+      s[j] = MatToVec(screen * VectoMat(s[j]));
       Vec3f &tmp = mod.textures.at(t2.points[j]);
       texs[j] = Vec3i(tmp.x * 1024, tmp.y * 1024);
     }
@@ -48,9 +59,8 @@ void render(Frame &frame, Model &mod){
     normal = normal.cross(tmp);
     normal.normalize();
     float intensity = (float)normal.dot(light_dir);
-    if (intensity > 0){
+    if (intensity > 0)
       triangle(mod, frame, s, zbuffer, texs, intensity);
-    }
   }
 }
 
@@ -58,18 +68,22 @@ void render(Frame &frame, Model &mod){
 int main(int ac, char **av) {
   Model mod;
   Frame frame(WIDTH, HEIGHT);
+  std::vector<Vec3f> v(3); // vertices float
+  std::vector<Vec3f> s(3); // vertices int
   
   if (ac >= 2 )
     mod = Model(av[1]);
   else 
     mod = Model("rsc/diablo3_pose.obj");
   frame.flipVerticaly(true);
-  frame.setEye(Vec3f(-0.2, 0, 0));
+  frame.setEye(Vec3f(0, 0, 0));
   mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));
+  mod.loadNormal(TGAImage(1024, 1024, TGAImage::RGB));
   mod.diffuse.flip_vertically();
+  mod.normals.flip_vertically();
   render(frame, mod);
   cout << "Sucess" << endl;
   frame.writeImage();
-
+  
   return 0;
 }

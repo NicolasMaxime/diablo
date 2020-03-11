@@ -63,6 +63,8 @@ Model::Model(const char* file) {
   float tab[3];
   char trash;
 
+  is_diffuse = false;
+  is_normal = false;
   name = file;
   if(ifs.is_open()){
     while(std::getline(ifs, line)){
@@ -80,6 +82,7 @@ Model::Model(const char* file) {
 	epur_line(line, 2);
 	faces.push_back(getfaces(line, 0));
 	texCoord.push_back(getfaces(line, 1));
+	normCoord.push_back(getfaces(line, 2));
       }
     }
     std::cout << "read : " << std::endl;
