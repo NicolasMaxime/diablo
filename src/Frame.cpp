@@ -5,7 +5,7 @@
 #include "Frame.h"
 
 Frame::Frame(int w, int h) {
-  std::vector<Couleur> map(w * (h + 1) +1);
+  std::vector<Couleur> map(w * (h + 1) + 1);
   pixmap = map;
   flipVertical = false;
   width = w;
@@ -83,11 +83,11 @@ void Frame::setLight(Vec3f l){
   light = l;
 }
 
-void Frame::writeImage(){
+void Frame::writeImage(const char *name){
   std::ofstream ofs;
   int nbPixel = height * width;
   
-  ofs.open("./out.ppm",std::ios::binary);
+  ofs.open(name, std::ios::binary);
 
   ofs << "P6\n" << width << " " << height << "\n255\n";
   for (size_t i = 0; i != nbPixel; ++i) {

@@ -14,6 +14,7 @@ class Frame {
   int height;
   Vec3f eye;
   Vec3f light;
+
  public:
   Frame(int width, int height);
   virtual ~Frame(){};
@@ -23,7 +24,18 @@ class Frame {
   int getNbPix() { return nbPix; }
   Vec3f &getEye() { return eye; }
   Vec3f &getLight() { return light; }
+  Couleur getPixel(int x, int y, int delta = 0){
+    int tmp;
 
+    tmp = y;
+    if (flipVertical){
+      tmp = height - y;
+    }
+    tmp = tmp * width + x + delta;
+    Couleur ret = pixmap.at(tmp);
+    return ret;
+  }
+  
   void setEye(Vec3f eye);
   void setLight(Vec3f l);
   void putPixel(int x, int y, Couleur &c);
@@ -31,7 +43,7 @@ class Frame {
   void drawLine(Vec3f &s1,Vec3f &s2, Couleur &c);
   void drawLine(Vec3i &s1,Vec3i &s2, Couleur &c);
   void flipVerticaly(bool);
-  void writeImage();
+  void writeImage(const char*);
 
 };
 

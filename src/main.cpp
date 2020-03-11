@@ -19,25 +19,32 @@
 
 #define WIDTH 1080
 #define HEIGHT 720
-
+#define DELTA (6 + WIDTH / 100)
+#define NW (WIDTH + DELTA)
 using namespace std;
 
-Matrix matrix_win(){
+Matrix matrix_win(Frame &frame){
   Matrix m(4, 4);
   
   m.identity();
-  m[0][0] = WIDTH / 2;
-  m[1][1] = HEIGHT / 2;
+  m[0][0] = (float)frame.getWidth() / 2;
+  m[1][1] = (float)frame.getHeight() / 2;
   return m;
 }
 
-void render(Frame &frame, Model &mod){  
+void render(Frame &frame, Frame &frame2, Model &mod){  
   int size = mod.faces.size();
-  float *zbuffer = new float[WIDTH*HEIGHT];
-  Matrix screen = matrix_win();
+  float *zbuffer = new float[NW*HEIGHT];
+  float *zbuffer2 = new float[NW*HEIGHT];
+  Matrix screen = matrix_win(frame);
+  Matrix proj(4, 4);
   
-  for (int z=0; z != frame.getNbPix(); z++)
+  proj.identity();
+  proj[3][2] = 1./0.2;
+  for (int z=0; z != frame.getNbPix(); z++){
     zbuffer[z] = -std::numeric_limits<float>::max();
+    zbuffer2[z] = -std::numeric_limits<float>::max();
+  }
   for (int i = 0; i != size; i++){
     std::vector<Vec3i> norms(3);
     std::vector<Vec3f> v(3); // vertices float
@@ -61,15 +68,39 @@ void render(Frame &frame, Model &mod){
     normal = normal.cross(tmp);
     normal.normalize();
     float intensity = (float)normal.dot(frame.getLight());
-    if (intensity > 0)
+    if (intensity > 0){
       triangle(mod, frame, s, intensity, zbuffer, texs, norms);
+      triangle(mod, frame2, s, intensity, zbuffer2, texs, norms);
+    }
   }
 }
 
+Frame anaglyph(Frame &frame, Frame &frame2) {
+  Frame frameRet(WIDTH, HEIGHT);
+  frameRet.flipVerticaly(true);
+  for(int j = 0 ; j != HEIGHT ; j++){
+    for (int i = 0; i != WIDTH; i++){
+      Couleur c1 = frame.getPixel(i, j, DELTA);
+      Couleur c2 = frame.getPixel(i, j);
+      float max1 = std::max(c1[0], std::max(c1[1], c1[2]));
+      if (max1>1) c1.mult(1./max1);
+      float max2 = std::max(c2[0], std::max(c2[1], c2[2]));
+      if (max2>1) c2.mult(1./max2);
+      
+      float avg1 = (c1.r+c1.g+c1.b)/3.;
+      float avg2 = (c2.r+c2.g+c2.b)/3.;
+      Couleur c(avg1, 0, avg2);
+      frameRet.putPixel(i, j, c);
+    }
+  }
+  
+  return frameRet;
+}
 
 int main(int ac, char **av) {
   Model mod;
-  Frame frame(WIDTH, HEIGHT);
+  Frame frame(NW, HEIGHT);
+  Frame frame2(NW, HEIGHT);
   std::vector<Vec3f> v(3); // vertices float
   std::vector<Vec3f> s(3); // vertices int
   
@@ -78,13 +109,20 @@ int main(int ac, char **av) {
   else 
     mod = Model("rsc/diablo3_pose.obj");
   frame.flipVerticaly(true);
-  frame.setEye(Vec3f(0, 0, 0));
+  frame.setEye(Vec3f(0.1, 0, 0));
   frame.setLight(Vec3f(0, 0, -1));
+  frame2.flipVerticaly(true);
+  frame2.setEye(Vec3f(-0.1, 0, 0));
+  frame2.setLight(Vec3f(0, 0, -1));
+  
   mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));
   mod.loadNormal(TGAImage(1024, 1024, TGAImage::RGB));
   mod.diffuse.flip_vertically();
   mod.normals.flip_vertically();
-  render(frame, mod);
+  render(frame, frame2, mod);
+  Frame frameRet = anaglyph(frame, frame2);
+  frameRet.writeImage("final.ppm");
+  //frame.writeImage("final.ppm");
+  
   cout << "Sucess" << endl;
-  frame.writeImage();
 }
