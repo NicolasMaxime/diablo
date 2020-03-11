@@ -11,6 +11,7 @@ SRCS	= $(SRC)/main.cpp\
 	  $(SRC)/Model.cpp\
 	  $(SRC)/Frame.cpp\
 	  $(SRC)/Matrix.cpp\
+	  $(SRC)/rasterizer.cpp\
 	  $(SRC)/tgaimage.cpp
 
 OBJS	= $(SRCS:.cpp=.o)

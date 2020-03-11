@@ -75,6 +75,10 @@ void Frame::drawLine(Vec3i &s1, Vec3i &s2, Couleur &c){
   drawLine(s1.x, s1.y, s2.x, s2.y, c);
 }
 
+void Frame::setEye(Vec3f e){
+  eye = e;
+}
+
 void Frame::writeImage(){
   std::ofstream ofs;
   int nbPixel = height * width;
