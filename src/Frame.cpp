@@ -79,6 +79,10 @@ void Frame::setEye(Vec3f e){
   eye = e;
 }
 
+void Frame::setLight(Vec3f l){
+  light = l;
+}
+
 void Frame::writeImage(){
   std::ofstream ofs;
   int nbPixel = height * width;

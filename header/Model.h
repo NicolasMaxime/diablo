@@ -27,7 +27,8 @@ public:
   std::vector<Triangle> normCoord;	//Normal of triangles
   std::vector<Vec3f> vertices;		//vertices
   std::vector<Vec3f> textures;
-
+  std::vector<Vec3f> norms;
+  
   Model(const char* file);
   
   void loadDiffuse(TGAImage img){

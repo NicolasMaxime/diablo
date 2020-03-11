@@ -22,8 +22,6 @@
 
 using namespace std;
 
-Vec3f light_dir = Vec3f(0, 0, -1);
-
 Matrix matrix_win(){
   Matrix m(4, 4);
   
@@ -41,26 +39,30 @@ void render(Frame &frame, Model &mod){
   for (int z=0; z != frame.getNbPix(); z++)
     zbuffer[z] = -std::numeric_limits<float>::max();
   for (int i = 0; i != size; i++){
+    std::vector<Vec3i> norms(3);
     std::vector<Vec3f> v(3); // vertices float
     std::vector<Vec3f> s(3); // vertices int
     std::vector<Vec3i> texs(3); //textures
     Triangle &t = mod.faces.at(i);
     Triangle &t2 = mod.texCoord.at(i);
+    Triangle &t3 = mod.normCoord.at(i);
     for (int j = 0; j != 3; j++){
       v[j] = mod.vertices.at(t.points[j]);
       s[j] = Vec3f((v[j].x + 1.), (v[j].y + 1.), v[j].z);
       s[j] = MatToVec(screen * VectoMat(s[j]));
       Vec3f &tmp = mod.textures.at(t2.points[j]);
       texs[j] = Vec3i(tmp.x * 1024, tmp.y * 1024);
+      Vec3f &tmp2 = mod.norms.at(t3.points[j]);
+      norms[j] = Vec3i(tmp2.x * 1024, tmp2.y * 1024);
     }
     
     Vec3f normal = Vec3f(v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z);
     Vec3f tmp = Vec3f(v[0].x -  v[2].x,  v[0].y - v[2].y, v[0].z - v[2].z);
     normal = normal.cross(tmp);
     normal.normalize();
-    float intensity = (float)normal.dot(light_dir);
+    float intensity = (float)normal.dot(frame.getLight());
     if (intensity > 0)
-      triangle(mod, frame, s, zbuffer, texs, intensity);
+      triangle(mod, frame, s, intensity, zbuffer, texs, norms);
   }
 }
 
@@ -77,6 +79,7 @@ int main(int ac, char **av) {
     mod = Model("rsc/diablo3_pose.obj");
   frame.flipVerticaly(true);
   frame.setEye(Vec3f(0, 0, 0));
+  frame.setLight(Vec3f(0, 0, -1));
   mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));
   mod.loadNormal(TGAImage(1024, 1024, TGAImage::RGB));
   mod.diffuse.flip_vertically();
@@ -84,6 +87,4 @@ int main(int ac, char **av) {
   render(frame, mod);
   cout << "Sucess" << endl;
   frame.writeImage();
-  
-  return 0;
 }

@@ -38,17 +38,32 @@ void getText(Model &mod, vector<Vec3i> &t, Vec3f &bary, Couleur &ret){
   ret.b = col.bgra[0] / 255.;
 }
 
+float get_intensity(Model &mod, Frame &frame, vector<Vec3i> &n, Vec3f &bary){
+  float ret;
+  int x = (bary.x * n[0].x + bary.y * n[1].x + bary.z * n[2].x);
+  int y = (bary.x * n[0].y + bary.y * n[1].y + bary.z * n[2].y);
+  TGAColor col = mod.normals.get(n[0].x, n[0].y);
+  Vec3f norm;
+  norm.x = col.bgra[2] / 255.;
+  norm.y = col.bgra[1] / 255.;
+  norm.z = col.bgra[0] / 255.;
+  norm.dot(frame.getLight());
+  ret = norm.dot(frame.getLight());
+  if (ret < 0)
+    ret = ret * -1;
+  return ret;
+}
+
 /*
 ** Rasterize triangle
 */
 
-void triangle(Model &mod, Frame &frame, vector<Vec3f> &v,	\
-	      float *zbuffer, vector<Vec3i> texs, float intensity){
+void triangle(Model &mod, Frame &frame, vector<Vec3f> &v, float intensity, \
+	      float *zbuffer, vector<Vec3i> texs, vector<Vec3i> norms){
   int x0 = (std::min(v[0].x, std::min(v[1].x, v[2].x)) + 1);
   int x1 = (std::max(v[0].x, std::max(v[1].x, v[2].x)) + 1);
   int y0 = (std::min(v[0].y, std::min(v[1].y, v[2].y)) + 1);
   int y1 = (std::max(v[0].y, std::max(v[1].y, v[2].y)) + 1);
-
 
   for (int y = y0; y != y1; y++){
     for (int x = x0; x != x1; x++){
@@ -63,7 +78,9 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v,	\
 	if (zbuffer[pos] < z){
 	  zbuffer[pos] = z;
 	  Couleur c = Couleur::white();
-	  if (mod.is_diffuse);
+	  if(mod.is_normal)
+	    //intensity = get_intensity(mod, frame, norms, bary);
+	  if (mod.is_diffuse)
 	    getText(mod, texs, bary, c);
 	  c.mult(intensity);
 
