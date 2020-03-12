@@ -46,6 +46,28 @@ public:
     normals = img;
     is_normal = normals.read_tga_file((char*)tag.c_str());
   }
+
+  Vec3f getVertices(int iface, int ivert){
+    Triangle &t = faces.at(iface);
+    Vec3f ret = vertices.at(t.points[ivert]);
+    return ret;
+  }
+  
+  Vec3f getNormals(int iface, int ivert){
+    Triangle &t = normCoord.at(iface);
+    Vec3f ret = norms.at(t.points[ivert]);
+    return ret;
+  }
+
+  Vec3i getTextures(int iface, int ivert){
+    Triangle &t = texCoord.at(iface);
+    Vec3f &tmp = textures.at(t.points[ivert]);
+    Vec3i ret;
+    ret.x = tmp.x * diffuse.get_width();
+    ret.y = tmp.y * diffuse.get_height();
+    ret.z = tmp.z;
+    return ret;
+  }
   
   Model(){;}
   virtual ~Model();

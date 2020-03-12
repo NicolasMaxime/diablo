@@ -46,15 +46,6 @@ float get_intensity(Model &mod, Frame &frame, vector<Vec3f> n, Vec3f &bary){
     inty = n[i].dot(frame.getLight());
     ret = ret + inty * bary[i];
   }
-  /*  int x = (bary.x * n[0].x + bary.y * n[1].x + bary.z * n[2].x);
-  int y = (bary.x * n[0].y + bary.y * n[1].y + bary.z * n[2].y);
-  TGAColor col = mod.normals.get(n[0].x, n[0].y);
-  Vec3f norm;
-  norm.x = col.bgra[2] / 255.;
-  norm.y = col.bgra[1] / 255.;
-  norm.z = col.bgra[0] / 255.;
-  norm.dot(frame.getLight());
-  ret = norm.dot(frame.getLight());*/
   if (ret < 0)
     ret = ret * -1;
   return ret;
@@ -80,6 +71,8 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v, float intensity, \
 	for (int i = 0; i != 3; i++){
 	  z += v[i].z * bary[i];
 	}
+	if (z < 0)
+	  z = 0;
 	int pos = x + y * frame.getWidth();
 	if (x > 0 && x < frame.getWidth() && y > 0 && y < frame.getHeight())
 	  if (zbuffer[pos] < z){
@@ -89,7 +82,7 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v, float intensity, \
 	      intensity = get_intensity(mod, frame, norms, bary);
 	      if (mod.is_diffuse)
 		getText(mod, texs, bary, c);
-	    c.mult(intensity);
+	      c.mult(intensity);
 
 	    int tmpx = (frame.getEye()).x * frame.getWidth() / 2;
 	    int tmpy = (frame.getEye()).y * frame.getHeight() / 2;

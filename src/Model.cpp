@@ -25,8 +25,6 @@ void get_float_value(std::string& line, float *tab) {
   }
 }
 
-
-
 Triangle getfaces(std::string &line, int nb){
   int tab[3];
   int i, j;
