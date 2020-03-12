@@ -77,8 +77,12 @@ void render(Frame &frame, Model &mod){
 
 Frame anaglyph(Frame &frame, Frame &frame2) {
   Frame frameRet(WIDTH, HEIGHT);
-  Matrix anag = anaglyphMatrix();
+  Matrix anag;
 
+  anag = anaglyphBetter(); // The best of the three feel free to change it.
+  //anag = anaglyphSimple();
+  //anag = anaglyphOptimized();
+  
   frameRet.flipVerticaly(true);
   for(int j = 0 ; j != HEIGHT ; j++){
     for (int i = 0; i != WIDTH; i++){
@@ -89,12 +93,10 @@ Frame anaglyph(Frame &frame, Frame &frame2) {
       float max2 = std::max(c2[0], std::max(c2[1], c2[2]));
       if (max2>1) c2.mult(1./max2);
 
-      //Matrix color = two_color_to_matrix(c1, c2);
-      //color = anag * color;
-      float avg1 = (c1.r+c1.g+c1.b)/3.;
-      float avg2 = (c2.r+c2.g+c2.b)/3.;
-      Couleur c(avg1, 0, avg2);
-      //Couleur c(c1.r, (c2.g), c2.b);
+      Matrix color = two_color_to_matrix(c1, c2);
+      color = anag * color;
+
+      Couleur c(color[0][0], color[1][0], color[2][0]);
       frameRet.putPixel(i, j, c);
     }
   }
@@ -106,20 +108,19 @@ int main(int ac, char **av) {
   Model mod;
   Frame frame(NW, HEIGHT);
   Frame frame2(NW, HEIGHT);
-  std::vector<Vec3f> v(3); // vertices float
-  std::vector<Vec3f> s(3); // vertices int
+  float eyespace = 0.2;
   
   if (ac >= 2 )
     mod = Model(av[1]);
   else 
     mod = Model("rsc/diablo3_pose.obj");
   frame.flipVerticaly(true);
-  frame.setEye(Vec3f(0.1, 0, 0.));
+  frame.setEye(Vec3f(eyespace, 0, 0.));
   frame.setLight(Vec3f(0, 0, -1));
   frame.setOrigin(Vec3f(0, 0, 0));
   
   frame2.flipVerticaly(true);
-  frame2.setEye(Vec3f(-0.1, 0, 0));
+  frame2.setEye(Vec3f(-eyespace, 0, 0));
   frame2.setLight(Vec3f(0, 0, -1));
   
   mod.loadDiffuse(TGAImage(1024, 1024, TGAImage::RGB));

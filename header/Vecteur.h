@@ -139,7 +139,10 @@ public:
 
 Matrix VectoMat(Vec3f &v);
 Vec3f MatToVec(Matrix m);
-Matrix anaglyphMatrix();
+Matrix anaglyphCIE();
+Matrix anaglyphSimple();
+Matrix anaglyphOptimized();
+Matrix anaglyphBetter();
 Matrix two_color_to_matrix(Couleur c1, Couleur c2);
 
-#endif /* POINT3D_H_ */
+#endif /* !POINT3D_H_ */
