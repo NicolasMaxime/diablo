@@ -79,6 +79,7 @@ Model::Model(const char* file) {
 	textures.push_back(Vec3f(tab[0], tab[1], tab[2]));
       }
       else if (line.compare(0, 2, "vn") == 0){
+	is_normal = true;
 	epur_line(line, 2);
 	get_float_value(line, tab);
 	norms.push_back(Vec3f(tab[0], tab[1], tab[2]));

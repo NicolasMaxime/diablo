@@ -11,6 +11,7 @@
 #include <sstream>
 #include <cmath>
 #include "Matrix.h"
+#include "Couleur.h"
 
 class Matrix;
 
@@ -74,7 +75,15 @@ public:
       return this->z;
   }
 
+  Vec3f operator-(Vec3f v){
+    Vec3f ret;
 
+    ret.x = x - v.x;
+    ret.y = y - v.y;
+    ret.z = z - v.z;
+
+    return ret;
+  }
   virtual ~Vec3f(){};
 };
 
@@ -130,5 +139,7 @@ public:
 
 Matrix VectoMat(Vec3f &v);
 Vec3f MatToVec(Matrix m);
+Matrix anaglyphMatrix();
+Matrix two_color_to_matrix(Couleur c1, Couleur c2);
 
 #endif /* POINT3D_H_ */

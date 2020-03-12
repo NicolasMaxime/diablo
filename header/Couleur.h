@@ -37,7 +37,7 @@ class Couleur {
       return r;
     else if (ind == 1)
       return g;
-    else if (ind == 2)
+    else
       return b;
   }
 };

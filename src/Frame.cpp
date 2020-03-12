@@ -10,7 +10,22 @@ Frame::Frame(int w, int h) {
   flipVertical = false;
   width = w;
   height = h;
-  nbPix = w * h;  
+  nbPix = w * h;
+  eye = Vec3f(0, 0, 0);
+  origin = Vec3f(0, 0, 0);
+  light = Vec3f(0, 0, -1);
+}
+
+Frame::Frame(int w, int h, Vec3f e, Vec3f o, Vec3f l) {
+  std::vector<Couleur> map(w * (h + 1) + 1);
+  pixmap = map;
+  flipVertical = false;
+  width = w;
+  height = h;
+  nbPix = w * h;
+  eye = e;
+  origin = o;
+  light = l;
 }
 
 void Frame::putPixel(int x, int y, Couleur &c){
@@ -81,6 +96,10 @@ void Frame::setEye(Vec3f e){
 
 void Frame::setLight(Vec3f l){
   light = l;
+}
+
+void Frame::setOrigin(Vec3f o){
+  origin = o;
 }
 
 void Frame::writeImage(const char *name){

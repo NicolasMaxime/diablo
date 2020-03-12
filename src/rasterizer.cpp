@@ -38,9 +38,15 @@ void getText(Model &mod, vector<Vec3i> &t, Vec3f &bary, Couleur &ret){
   ret.b = col.bgra[0] / 255.;
 }
 
-float get_intensity(Model &mod, Frame &frame, vector<Vec3i> &n, Vec3f &bary){
-  float ret;
-  int x = (bary.x * n[0].x + bary.y * n[1].x + bary.z * n[2].x);
+float get_intensity(Model &mod, Frame &frame, vector<Vec3f> n, Vec3f &bary){
+  float ret = 0;
+  float inty;
+  for (int i = 0; i != 3; i++){
+    n[i].normalize();
+    inty = n[i].dot(frame.getLight());
+    ret = ret + inty * bary[i];
+  }
+  /*  int x = (bary.x * n[0].x + bary.y * n[1].x + bary.z * n[2].x);
   int y = (bary.x * n[0].y + bary.y * n[1].y + bary.z * n[2].y);
   TGAColor col = mod.normals.get(n[0].x, n[0].y);
   Vec3f norm;
@@ -48,7 +54,7 @@ float get_intensity(Model &mod, Frame &frame, vector<Vec3i> &n, Vec3f &bary){
   norm.y = col.bgra[1] / 255.;
   norm.z = col.bgra[0] / 255.;
   norm.dot(frame.getLight());
-  ret = norm.dot(frame.getLight());
+  ret = norm.dot(frame.getLight());*/
   if (ret < 0)
     ret = ret * -1;
   return ret;
@@ -59,7 +65,7 @@ float get_intensity(Model &mod, Frame &frame, vector<Vec3i> &n, Vec3f &bary){
 */
 
 void triangle(Model &mod, Frame &frame, vector<Vec3f> &v, float intensity, \
-	      float *zbuffer, vector<Vec3i> texs, vector<Vec3i> norms){
+	      float *zbuffer, vector<Vec3i> texs, vector<Vec3f> norms){
   int x0 = (std::min(v[0].x, std::min(v[1].x, v[2].x)) + 1);
   int x1 = (std::max(v[0].x, std::max(v[1].x, v[2].x)) + 1);
   int y0 = (std::min(v[0].y, std::min(v[1].y, v[2].y)) + 1);
@@ -75,19 +81,20 @@ void triangle(Model &mod, Frame &frame, vector<Vec3f> &v, float intensity, \
 	  z += v[i].z * bary[i];
 	}
 	int pos = x + y * frame.getWidth();
-	if (zbuffer[pos] < z){
-	  zbuffer[pos] = z;
-	  Couleur c = Couleur::white();
-	  if(mod.is_normal)
-	    //intensity = get_intensity(mod, frame, norms, bary);
-	  if (mod.is_diffuse)
-	    getText(mod, texs, bary, c);
-	  c.mult(intensity);
+	if (x > 0 && x < frame.getWidth() && y > 0 && y < frame.getHeight())
+	  if (zbuffer[pos] < z){
+	    zbuffer[pos] = z;
+	    Couleur c = Couleur::white();
+	    if(mod.is_normal)
+	      intensity = get_intensity(mod, frame, norms, bary);
+	      if (mod.is_diffuse)
+		getText(mod, texs, bary, c);
+	    c.mult(intensity);
 
-	  int tmpx = (frame.getEye()).x * frame.getWidth() / 2;
-	  int tmpy = (frame.getEye()).y * frame.getHeight() / 2;
-	  frame.putPixel(x - tmpx, y - tmpy, c);
-	}
+	    int tmpx = (frame.getEye()).x * frame.getWidth() / 2;
+	    int tmpy = (frame.getEye()).y * frame.getHeight() / 2;
+	    frame.putPixel(x - tmpx, y - tmpy, c);
+	  }
       }
     }
   }
