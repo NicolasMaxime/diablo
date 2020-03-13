@@ -1,7 +1,7 @@
 This little software was made for school.
 
 The goal was to learn how to make an anaglyph 3D renderer with primitive rasterization.
-We must thanks Dimitry Sokolov for his courses which can be find here :
+We must thanks Dmitry Sokolov for his courses which can be find here :
 https://github.com/ssloy
 
 Compiling : make
