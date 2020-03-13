@@ -1,1 +1,19 @@
+This little software was made for school.
 
+The goal was to learn how to make an anaglyph 3D renderer with primitive rasterization.
+We must thanks Dmitry Sokolov for his courses which can be find here :
+https://github.com/ssloy
+
+Compiling : make
+
+Executing : ./render [ObjectFile.obj]
+
+If no object file is specified, the software use diablo3_pose by default.
+If you want to read a paired diffuse file, put it in the same folder than the object file.
+
+This software do :
+
+- Triangle rasterization
+- Texture
+- Gouraud shading
+- anaglyph
